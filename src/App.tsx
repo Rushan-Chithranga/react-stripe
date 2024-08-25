@@ -1,14 +1,17 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import PricingPage from "./pages/PricingPage";
+import { Dashboard } from "./pages/Dashboard";
 
 function App() {
-
   return (
-    <>
-      <div className="mx-auto flex justify-center bg-red-200">
-        helooo
-
-      </div>
-    </>
-  )
+    
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/pricing" element={<PricingPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
