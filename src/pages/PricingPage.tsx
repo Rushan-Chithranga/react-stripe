@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import axios from "axios";
 import { cn } from "@/lib/utils";
 import styles from "../pricing.module.css";
 
@@ -106,6 +107,18 @@ const CheckIcon = ({ className }: { className?: string }) => {
 };
 
 export default function PricingPage() {
+  const buyFunction = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/payment");
+      if (response.status === 200) {
+        window.location.href = response.data.url;
+        // console.log(response.data);
+      }
+    } catch (error) {
+      console.error("Error processing payment:", error);
+    }
+  };
+
   const [frequency, setFrequency] = useState(frequencies[0]);
 
   const bannerText = "";
@@ -252,31 +265,24 @@ export default function PricingPage() {
                       </span>
                     ) : null}
                   </p>
-                  <a
-                    href={tier.href}
-                    aria-describedby={tier.id}
+
+                  <Button
+                    onClick={buyFunction}
+                    size="lg"
+                    disabled={tier.soldOut}
                     className={cn(
-                      "flex mt-6 shadow-sm",
-                      tier.soldOut ? "pointer-events-none" : ""
+                      "w-full text-black dark:text-white flex mt-6 shadow-sm",
+                      !tier.highlighted && !tier.featured
+                        ? "bg-gray-100 dark:bg-gray-600"
+                        : "bg-lime-300 hover:bg-lime-400 dark:bg-lime-600 dark:hover:bg-lime-700",
+                      tier.featured || tier.soldOut
+                        ? "bg-white dark:bg-neutral-900 hover:bg-gray-200 dark:hover:bg-black"
+                        : "hover:opacity-80 transition-opacity"
                     )}
+                    variant={tier.highlighted ? "default" : "outline"}
                   >
-                    <Button
-                      size="lg"
-                      disabled={tier.soldOut}
-                      className={cn(
-                        "w-full text-black dark:text-white",
-                        !tier.highlighted && !tier.featured
-                          ? "bg-gray-100 dark:bg-gray-600"
-                          : "bg-lime-300 hover:bg-lime-400 dark:bg-lime-600 dark:hover:bg-lime-700",
-                        tier.featured || tier.soldOut
-                          ? "bg-white dark:bg-neutral-900 hover:bg-gray-200 dark:hover:bg-black"
-                          : "hover:opacity-80 transition-opacity"
-                      )}
-                      variant={tier.highlighted ? "default" : "outline"}
-                    >
-                      {tier.soldOut ? "Sold out" : tier.cta}
-                    </Button>
-                  </a>
+                    {tier.soldOut ? "Sold out" : tier.cta}
+                  </Button>
 
                   <ul
                     className={cn(
