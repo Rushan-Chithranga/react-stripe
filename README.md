@@ -50,7 +50,8 @@ export default tseslint.config({
 ```
 - knex create migration example
 
-```npx knex migrate:make create_products_table
+```
+npx knex migrate:make create_products_table
 ```
 
 - knex create seed example
