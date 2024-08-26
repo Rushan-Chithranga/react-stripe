@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const db = require('./db'); 
 
 const app = express();
 
@@ -10,6 +11,17 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('Hello World');
+});
+
+app.get('/products', (req, res) => {
+    db.query('SELECT * FROM products', (error, results) => {
+        if (error) {
+            console.error('Error fetching products:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        res.json(results);
+    });
 });
 
 app.post('/payment', async (req, res) => {
